@@ -55,14 +55,20 @@ class GUIstuff(tkr.Frame):
         
         
         self.add = tkr.Entry(root)
-        self.add.pack(side = "top")
+        self.add.place(x=150, y=100, width=100, height=25)
+        
+        self.add1 = tkr.Entry(root)
+        self.add1.place(x=150, y=150, width= 100, height=25)
+        
+        self.add2 = tkr.Entry(root)
+        self.add2.place(x=150, y=200, width= 100, height=25)
         
         
         self.save = tkr.Button(self)
         self.save["text"] = "Save"
         dict = Dictionary()
-        ##self.save["command"] = dict.saveWord()
-        self.save.pack(side="left")
+        self.save["command"] = dict.saveWord(self.add.get(), self.add1.get(), self.add2.get())
+        self.save.pack(side="left", padx=5)
         
         
         
