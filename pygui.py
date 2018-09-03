@@ -12,7 +12,6 @@ class Dictionary:
     def __init__(self):
         data = pd.read_csv("Dictionary.csv", header=0)
         self.df = pd.DataFrame(data)
-        # print(self.df)
 
     def retrieveword(self, word):
         row = self.df.loc[self.df['Word'] == word]
@@ -22,12 +21,7 @@ class Dictionary:
             partOfSpeech = row["PartOfSpeech"].to_string(index=False)
             lines = ["Word: wordName", wordName,"", 'Definition: ', definition,"", "Part of speech: ", partOfSpeech]
             messagebox.showinfo(wordName, "\n".join(lines))
-            # print()
-            # print("The word is: ", wordName)
-            # print("The meaning of the word is: ", definition)
-            # print("And it's part of speech value is: ", partOfSpeech)
         else:
-            # print()
             messagebox.showinfo("Error", "Error: Word does not exist")
 
     def saveWord(self, word, partOfSpeech, definition):
@@ -35,12 +29,10 @@ class Dictionary:
         if row.empty is True:
             row = pd.DataFrame({'Word': [word], 'PartOfSpeech': [partOfSpeech], 'Definition': [definition]})
             self.df = self.df.append(row, sort = False)
-            # print(self.df)
             with open("Dictionary.csv", 'w') as f:
                 self.df.to_csv(f, header=True, index=False)
                 messagebox.showinfo("Added","Word added to dictionary.")
         else:
-            # print()
             messagebox.showinfo("Error", "Word already exists in the dictionary")
 
 #
@@ -50,36 +42,46 @@ class GUIstuff(tkr.Frame):
         self.pack()
         self.create_widgets()
 
-
     def create_widgets(self):
         dict = Dictionary()
+
+        self.winfo_toplevel().title("Mini Dictionary")
+
+        self.labelText = tkr.StringVar()
+        self.labelText.set("Retrieve word:")
+        self.labelDir = Label(root, textvariable=self.labelText, height=0)
+        self.labelDir.pack(side="top")
 
         # Retrieve
         self.retrieve = tkr.Entry(root)
         self.retrieve.insert(0, "Type in the word you want to add")
-        self.retrieve.pack(side="right", fill='x', expand=True, padx=50, pady=4)
+        self.retrieve.pack(side="top", fill='x', padx=30)
+
+        # Check definition
+        self.check = tkr.Button(root)
+        self.check["text"] = "Definition"
+        self.check.pack(side="top", padx=10, pady=20)
+        self.check["command"] = lambda: dict.retrieveword(self.retrieve.get())
+
 
         # Exit button
-        self.quit = tkr.Button(self, text="Exit", fg="red", command=root.destroy)
-        self.quit.pack(side="right", fill='both', expand=True, padx=4, pady=4)
+        self.quit = tkr.Button(self, text="Exit", fg="red", bg="black", command=root.destroy)
+        self.quit.pack(side="right", expand=True, padx=4, pady=30)
 
         # Add button
         self.add = tkr.Button(self)
-        self.add["text"] = "Add"
-        self.add.pack(side="right", fill='both', expand=True, padx=4, pady=4)
+        self.add["text"] = "Add Word to Dictionary"
+        self.add.pack(side="right", expand=True, padx=4, pady=0)
         self.add["command"] = self.hide_main
 
-        # Check definition
-        self.check = tkr.Button(self)
-        self.check["text"] = "Check Definition"
-        self.check.pack(side="bottom", fill='both', expand=True, padx=4, pady=4)
-        self.check["command"] = lambda: dict.retrieveword(self.retrieve.get())
+
 
     def hide_main(self):
         self.retrieve.forget()
         self.add.pack_forget()
         self.check.pack_forget()
         self.quit.pack_forget()
+        self.labelDir.forget()
         self.add_word()
 
     def hide_add(self):
@@ -92,6 +94,9 @@ class GUIstuff(tkr.Frame):
         # Exit
         self.quit.pack_forget()
         self.create_widgets()
+        self.wordDir.forget()
+        self.posDir.forget()
+        self.defiDir.forget()
 
 
     def add_word(self):
@@ -100,38 +105,51 @@ class GUIstuff(tkr.Frame):
 
         # Exit button
         self.quit = tkr.Button(self, text="Exit", fg="red", command=root.destroy)
-        self.quit.pack(side="right", fill='both', expand=True, padx=4, pady=4)
+        self.quit.pack(side="right", expand=True, padx=4, pady=20)
 
         # Save button
         self.save = tkr.Button(self)
         self.save["text"] = "Save"
-        self.save["command"] = lambda: self.dict.saveWord(self.word.get(), self.pos.get(), self.defi.get())
-        self.save.pack(side="right", fill='x', expand=True, padx=50, pady=4)
+        self.save["command"] = lambda: dict.saveWord(self.word.get(), self.pos.get(), self.defi.get())
+        self.save.pack(side="right",expand=True, padx=4, pady=0)
 
         # Back button
         self.back = tkr.Button(self)
         self.back["text"] = "Back"
         self.back["command"] = lambda: self.hide_add()
-        self.back.pack(side="right", fill='x', expand=True, padx=50, pady=4)
+        self.back.pack(side="right", expand=True, padx=4, pady=0)
 
         # Word
+        self.wordLabel = tkr.StringVar()
+        self.wordLabel.set("Word:")
+        self.wordDir = Label(root, textvariable=self.wordLabel, height=0)
+        self.wordDir.pack(side="top")
+
         self.word = tkr.Entry(root)
         self.word.insert(0, "Type in the word you want to add")
-        self.word.pack(side="top", fill='x', expand=True, padx=50, pady=2)
+        self.word.pack(side="top", fill='x', expand=True, padx=30, pady=0)
 
         # PoS
+        self.posLabel = tkr.StringVar()
+        self.posLabel.set("Part of Speech:")
+        self.posDir = Label(root, textvariable=self.posLabel, height=0)
+        self.posDir.pack(side="top")
+
         self.pos = tkr.Entry(root)
         self.pos.insert(0, "Type the part of speech")
         self.pos.place(x=150, y=150, width=100, height=25)
-        self.pos.pack(side="top", fill='x', expand=True, padx=50, pady=2)
+        self.pos.pack(side="top", fill='x', expand=True, padx=30, pady=0)
 
         # Definition
+        self.defiLabel = tkr.StringVar()
+        self.defiLabel.set("Defintion")
+        self.defiDir = Label(root, textvariable=self.defiLabel, height=0)
+        self.defiDir.pack(side="top")
+
         self.defi = tkr.Entry(root)
         self.defi.insert(0, "Type the defintion")
         self.defi.place(x=150, y=200, width=100, height=25)
-        self.defi.pack(side="top", fill='x', expand=True, padx=50, pady=2)
-
-
+        self.defi.pack(side="top", fill='x', expand=True, padx=30, pady=0)
 
 root = tkr.Tk()
 root.geometry("400x300")
