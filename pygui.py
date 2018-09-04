@@ -1,3 +1,4 @@
+
 import tkinter as tkr
 import pandas as pd
 from tkinter import messagebox
@@ -28,7 +29,7 @@ class Dictionary:
         row = self.df.loc[self.df['Word'] == word]
         if row.empty is True:
             row = pd.DataFrame({'Word': [word], 'PartOfSpeech': [partOfSpeech], 'Definition': [definition]})
-            self.df = self.df.append(row, sort = False)
+            self.df = self.df.append(row, sorted = False)
             with open("Dictionary.csv", 'w') as f:
                 self.df.to_csv(f, header=True, index=False)
                 messagebox.showinfo("Added","Word added to dictionary.")
@@ -65,7 +66,7 @@ class GUIstuff(tkr.Frame):
 
 
         # Exit button
-        self.quit = tkr.Button(self, text="Exit", fg="red", bg="black", command=root.destroy)
+        self.quit = tkr.Button(self, text="Exit", fg="red", command=root.destroy)
         self.quit.pack(side="right", expand=True, padx=4, pady=30)
 
         # Add button
