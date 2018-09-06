@@ -110,8 +110,8 @@ class GUIstuff(tkr.Frame):
         self.check["command"] = lambda: dict.retrieveword(self.retrieve.get())
 
 
-        # Exit - button
-        self.quit = tkr.Button(self, text="Exit", fg="red", bg="black", command=root.destroy)
+        # Exit button
+        self.quit = tkr.Button(self, text="Exit", fg="red", command=root.destroy)
         self.quit.pack(side="right", expand=True, padx=4, pady=30)
 
         # Add - button
@@ -208,4 +208,3 @@ root = tkr.Tk()
 root.geometry("400x300")
 app = GUIstuff(master=root)
 app.mainloop()
-
